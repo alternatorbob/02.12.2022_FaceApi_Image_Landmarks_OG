@@ -1,3 +1,5 @@
+import { cropCanvas, toBase64 } from "./utils.js";
+
 let faceapi;
 let img;
 let detections;
@@ -72,7 +74,7 @@ function drawBoxes(detections) {
 }
 
 // listener, using W3C style for example
-function addClick(detections) {
+function addClick() {
   canvas.addEventListener(
     "click",
     (e) => {
@@ -82,13 +84,12 @@ function addClick(detections) {
           e.offsetX,
           e.offsetY
         );
-        console.log("detections:", detections);
         console.log("click: " + e.offsetX + "/" + e.offsetY);
-
         if (isCollision) {
-          console.log("collision: " + isCollision.x + "/" + isCollision.y);
-          console.log("last collision:", lastCollision);
-          console.log("detections[lastCollision]:", detections[lastCollision]);
+          // console.log("collision: " + isCollision.x + "/" + isCollision.y);
+          // console.log("last collision:", lastCollision);
+          // console.log("detections[lastCollision]:", detections[lastCollision]);
+          cropCanvas(canvas, detections[lastCollision]);
           drawBox(detections[lastCollision]);
         } else {
           console.log("no collision");
