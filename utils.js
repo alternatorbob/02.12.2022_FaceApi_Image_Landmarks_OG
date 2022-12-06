@@ -40,7 +40,7 @@ function toDataURL(url) {
   xhRequest.onload = function () {
     let reader = new FileReader();
     reader.onloadend = function () {
-        console.log(reader.result);
+      // console.log(reader.result);
       //   callback(reader.result);
     };
     reader.readAsDataURL(xhRequest.response);
