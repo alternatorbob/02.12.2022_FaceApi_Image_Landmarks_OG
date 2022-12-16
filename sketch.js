@@ -50,10 +50,10 @@ function gotResults(err, result) {
 }
 
 function drawBox(detection) {
-  const alignedRect = detection.alignedRect;
-  const { _x, _y, _width, _height } = alignedRect._box;
-
-  ctx.rect(_x, _y, _width, _height);
+  // const alignedRect = detection.alignedRect;
+  // const { _x, _y, _width, _height } = alignedRect._box;
+  console.log("DRAW BOX ",detection);
+  ctx.rect(detection.x,detection.y,detection.w,detection.h);
   ctx.strokeStyle = "#00ff00";
   ctx.stroke();
 }
@@ -78,19 +78,22 @@ function addClick() {
   canvas.addEventListener(
     "click",
     (e) => {
+
+      console.log(detectionBoxes)
       if (detections.length > 0) {
-        const [isCollision, lastCollision] = collides(
+        const collider = collides(
           detectionBoxes,
           e.offsetX,
           e.offsetY
         );
         console.log("click: " + e.offsetX + "/" + e.offsetY);
-        if (isCollision) {
+        if (collider) {
+          console.log(collider)
           // console.log("collision: " + isCollision.x + "/" + isCollision.y);
           // console.log("last collision:", lastCollision);
           // console.log("detections[lastCollision]:", detections[lastCollision]);
-          cropCanvas(canvas, detections[lastCollision]);
-          drawBox(detections[lastCollision]);
+          // cropCanvas(canvas, collider[0]);
+          drawBox(collider[0]);
         } else {
           console.log("no collision");
         }
@@ -102,20 +105,29 @@ function addClick() {
 
 // prettier-ignore
 function collides(rects, x, y) {
-  let isCollision = false;
-  let lastCollision = -1;
-  for (let i = 0, len = rects.length; i < len; i++) {
-      let left = rects[i].x, right = rects[i].x+rects[i].w;
-      let top = rects[i].y, bottom = rects[i].y+rects[i].h;
-      if (right >= x
-          && left <= x
-          && bottom >= y
-          && top <= y) {
-            lastCollision = i
-            isCollision = rects[i];
-      }
-  }
-  return [isCollision, lastCollision];
+  let collider = null;
+  rects.forEach(rect=>{
+    
+    if(x>=rect.x && x<=rect.x+rect.w && y>=rect.y && y<=rect.y+rect.h){
+      collider = rect;
+    }
+  });
+  console.log(collider)
+  return [collider];
+  // let isCollision = false;
+  // let lastCollision = -1;
+  // for (let i = 0, len = rects.length; i < len; i++) {
+  //     let left = rects[i].x, right = rects[i].x+rects[i].w;
+  //     let top = rects[i].y, bottom = rects[i].y+rects[i].h;
+  //     if (right >= x
+  //         && left <= x
+  //         && bottom >= y
+  //         && top <= y) {
+  //           lastCollision = i
+  //           isCollision = rects[i];
+  //     }
+  // }
+  // return [isCollision, lastCollision];
 }
 
 function drawLandmarks(detections) {
